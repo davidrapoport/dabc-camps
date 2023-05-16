@@ -5,3 +5,5 @@ Figure out how to make the web request
 Tried different auth headers and methods before realizing that 
 for some reason, URLEncoding the form data by hand (as in, not letting the
 requests library do it for you) was the secret, headers don't matter.
+5/15: 0.5 hrs
+Set up firebase hosting and initialized react project.
