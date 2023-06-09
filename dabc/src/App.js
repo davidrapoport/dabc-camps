@@ -1,9 +1,10 @@
 import "./App.css";
+import { app } from "./firebase";
 
 function App() {
   return (
     <div className="App">
-      <header className="App-header">TODO</header>
+      <p>TODO</p>
     </div>
   );
 }
