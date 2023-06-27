@@ -35,11 +35,11 @@ const Register = () => {
             );
             break;
           case "auth/email-already-in-use":
-            alert("user already exists with that email, please log in");
+            alert("User already exists with that email, please log in");
             navigate("/login");
             break;
           case "auth/invalid-email":
-            alert("invalid email, please try again");
+            alert("Invalid email, please try again");
             break;
           default:
             break;
