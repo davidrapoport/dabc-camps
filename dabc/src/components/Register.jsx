@@ -65,7 +65,7 @@ const Register = () => {
           name="secret"
           value={secretKey}
           onChange={(e) => setSecretKey(e.target.value)}
-          placeholder="the secret key"
+          placeholder="your invite code"
         ></input>
         <button onClick={register}>Register</button>
       </form>
