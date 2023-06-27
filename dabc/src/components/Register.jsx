@@ -29,6 +29,11 @@ const Register = () => {
         console.log("error code: ", errorCode);
         console.log("error message: ", errorMessage);
         switch (errorCode) {
+          case "auth/network-request-failed":
+            alert(
+              "Network error, please check your internet connection and try again."
+            );
+            break;
           case "auth/email-already-in-use":
             alert("user already exists with that email, please log in");
             navigate("/login");
