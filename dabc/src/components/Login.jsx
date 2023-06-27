@@ -22,11 +22,17 @@ const Login = () => {
         console.log("error code: ", errorCode);
         console.log("error message: ", errorMessage);
         switch (errorCode) {
-          //TODO: add other error handling cases
           case "auth/network-request-failed":
             alert(
               "Network error, please check your internet connection and try again."
             );
+            break;
+          case "auth/wrong-password":
+            alert("Incorrect password, please try again.");
+            setPassword("");
+            break;
+          case "auth/invalid-email":
+            alert("Invalid email, please try again.");
             break;
           default:
             break;
