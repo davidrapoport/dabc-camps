@@ -71,6 +71,9 @@ const Register = () => {
         ></input>
         <button onClick={register}>Register</button>
       </form>
+      <p>
+        Already a User? Login here: <a href="/login">Login</a>
+      </p>
     </div>
   );
 };
