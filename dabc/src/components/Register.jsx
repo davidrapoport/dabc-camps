@@ -53,29 +53,20 @@ const Register = () => {
         <label htmlFor="email">Email:</label>
         <input
           type="email"
-          id="email"
-          name="email"
           value={email}
           onChange={(e) => setEmail(e.target.value)}
-          placeholder="your email"
         ></input>
         <label htmlFor="pass">Password:</label>
         <input
           type="password"
-          id="pass"
-          name="password"
           value={password}
           onChange={(e) => setPassword(e.target.value)}
-          placeholder="your password"
         ></input>
         <label htmlFor="secret">Invite Code:</label>
         <input
           type="password"
-          id="secret"
-          name="secret"
           value={secretKey}
           onChange={(e) => setSecretKey(e.target.value)}
-          placeholder="your invite code"
         ></input>
         <button onClick={register}>Register</button>
       </form>
