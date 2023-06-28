@@ -8,7 +8,6 @@ import { app } from "./firebase";
 function App() {
   return (
     <div className="App">
-      <p>TODO Nick was here</p>
       <Router>
         <Routes>
           <Route exact path="/register" element={<Register />} />
