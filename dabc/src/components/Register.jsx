@@ -1,6 +1,10 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { getAuth, createUserWithEmailAndPassword } from "firebase/auth";
+import {
+  getAuth,
+  createUserWithEmailAndPassword,
+  onAuthStateChanged,
+} from "firebase/auth";
 import { inviteCode } from "../secret";
 
 const Register = () => {
@@ -10,6 +14,12 @@ const Register = () => {
   const [secretKey, setSecretKey] = useState("");
   const [errorCode, setErrorCode] = useState("");
   const navigate = useNavigate();
+
+  onAuthStateChanged(auth, (user) => {
+    if (user) {
+      navigate("/home");
+    }
+  });
 
   const register = (e) => {
     e.preventDefault();
