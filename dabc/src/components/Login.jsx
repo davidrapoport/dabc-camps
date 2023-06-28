@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import {
   getAuth,
   signInWithEmailAndPassword,
@@ -67,7 +67,7 @@ const Login = () => {
         <button onClick={login}>Login</button>
       </form>
       <p>
-        New User? Register here: <a href="/register">Register</a>
+        New User? Register here: <Link to="/register">Register</Link>
       </p>
     </div>
   );

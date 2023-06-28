@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import {
   getAuth,
   createUserWithEmailAndPassword,
@@ -82,7 +82,7 @@ const Register = () => {
         <button onClick={register}>Register</button>
       </form>
       <p>
-        Already a User? Login here: <a href="/login">Login</a>
+        Already a User? Login here: <Link to="/login">Login</Link>
       </p>
     </div>
   );
