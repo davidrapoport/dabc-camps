@@ -18,15 +18,11 @@ const Login = () => {
     e.preventDefault();
     signInWithEmailAndPassword(auth, email, password)
       .then((userCredential) => {
-        const user = userCredential.user;
-        console.log("user variable: ", user);
         navigate("/home");
       })
       .catch((err) => {
         const errorCode = err.code;
         const errorMessage = err.message;
-        console.log("error code: ", errorCode);
-        console.log("error message: ", errorMessage);
         switch (errorCode) {
           case "auth/network-request-failed":
             alert(
