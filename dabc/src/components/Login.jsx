@@ -1,40 +1,45 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { getAuth, signInWithEmailAndPassword, onAuthStateChanged } from "firebase/auth";
+import {
+  getAuth,
+  signInWithEmailAndPassword,
+  onAuthStateChanged,
+} from "firebase/auth";
 
 const Login = () => {
   const auth = getAuth();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [errorCode, setErrorCode] = useState("");
   const navigate = useNavigate();
 
   onAuthStateChanged(auth, (user) => {
-    if(user) {
-      navigate('/home')
+    if (user) {
+      navigate("/home");
     }
-  })
+  });
 
   const login = (e) => {
     e.preventDefault();
+    setErrorCode("");
     signInWithEmailAndPassword(auth, email, password)
       .then((userCredential) => {
         navigate("/home");
       })
       .catch((err) => {
-        const errorCode = err.code;
-        const errorMessage = err.message;
-        switch (errorCode) {
+        switch (err.code) {
           case "auth/network-request-failed":
-            alert(
+            setErrorCode(
               "Network error, please check your internet connection and try again."
             );
             break;
+          case "auth/missing-password":
           case "auth/wrong-password":
-            alert("Incorrect password, please try again.");
+            setErrorCode("Incorrect password, please try again.");
             setPassword("");
             break;
           case "auth/invalid-email":
-            alert("Invalid email, please try again.");
+            setErrorCode("Invalid email, please try again.");
             break;
           default:
             break;
@@ -44,6 +49,7 @@ const Login = () => {
 
   return (
     <div>
+      <p>{errorCode}</p>
       <form>
         <label htmlFor="email">Email:</label>
         <input

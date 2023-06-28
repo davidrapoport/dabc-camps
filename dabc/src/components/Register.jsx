@@ -8,12 +8,14 @@ const Register = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [secretKey, setSecretKey] = useState("");
+  const [errorCode, setErrorCode] = useState("");
   const navigate = useNavigate();
 
   const register = (e) => {
     e.preventDefault();
+    setErrorCode("");
     if (secretKey !== inviteCode) {
-      alert("invalid invite code, please try again");
+      setErrorCode("invalid invite code, please try again");
       setSecretKey("");
       return;
     }
@@ -22,20 +24,21 @@ const Register = () => {
         navigate("/home");
       })
       .catch((err) => {
-        const errorCode = err.code;
-        const errorMessage = err.message;
-        switch (errorCode) {
+        switch (err.code) {
           case "auth/network-request-failed":
-            alert(
+            setErrorCode(
               "Network error, please check your internet connection and try again."
             );
             break;
           case "auth/email-already-in-use":
-            alert("User already exists with that email, please log in");
-            navigate("/login");
+            setErrorCode("User already exists with that email, please log in");
             break;
           case "auth/invalid-email":
-            alert("Invalid email, please try again");
+            setErrorCode("Invalid email, please try again");
+            break;
+          case "auth/weak-password":
+          case "auth/missing-password":
+            setErrorCode("Password must be at least 6 characters");
             break;
           default:
             break;
@@ -45,6 +48,7 @@ const Register = () => {
 
   return (
     <div>
+      <p>{errorCode}</p>
       <form>
         <label htmlFor="email">Email:</label>
         <input
