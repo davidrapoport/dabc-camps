@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { getAuth, onAuthStateChanged, signOut } from "firebase/auth";
 import { useNavigate } from "react-router-dom";
+import "./Home.css";
 
 const Home = () => {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
@@ -20,15 +21,13 @@ const Home = () => {
       .then(() => {
         navigate("/login");
       })
-      .catch((err) => {
-
-      });
+      .catch((err) => {});
   };
 
   return isLoggedIn ? (
-    <div>
+    <div className="home-page">
       <p>This is the home page</p>
-      <button onClick={logOut}>Log Out</button>
+      <button onClick={logOut} className="logout-button">Log Out</button>
     </div>
   ) : (
     <></>
