@@ -6,6 +6,7 @@ import {
   onAuthStateChanged,
 } from "firebase/auth";
 import { inviteCode } from "../secret";
+import "./Register.css";
 
 const Register = () => {
   const auth = getAuth();
@@ -25,7 +26,7 @@ const Register = () => {
     e.preventDefault();
     setErrorCode("");
     if (secretKey !== inviteCode) {
-      setErrorCode("invalid invite code, please try again");
+      setErrorCode("Invalid invite code, please try again");
       setSecretKey("");
       return;
     }
@@ -58,31 +59,45 @@ const Register = () => {
 
   return (
     <div>
-      <p>{errorCode}</p>
-      <form>
-        <label htmlFor="email">Email:</label>
+      <p className="error-message">{errorCode}</p>
+      <form className="registration-form">
+        <label htmlFor="email" className="label">
+          Email:
+        </label>
         <input
+          className="input"
           type="email"
           name="email"
           value={email}
           onChange={(e) => setEmail(e.target.value)}
         ></input>
-        <label htmlFor="pass">Password:</label>
+        <label htmlFor="pass" className="label">
+          Password:
+        </label>
         <input
+          className="input"
           type="password"
           value={password}
           onChange={(e) => setPassword(e.target.value)}
         ></input>
-        <label htmlFor="secret">Invite Code:</label>
+        <label htmlFor="secret" className="label">
+          Invite Code:
+        </label>
         <input
+          className="input"
           type="password"
           value={secretKey}
           onChange={(e) => setSecretKey(e.target.value)}
         ></input>
-        <button onClick={register}>Register</button>
+        <button onClick={register} className="register-button">
+          Register
+        </button>
       </form>
       <p>
-        Already a User? Login here: <Link to="/login">Login</Link>
+        Already a User? Login here:{" "}
+        <Link to="/login" className="login-link">
+          Login
+        </Link>
       </p>
     </div>
   );
