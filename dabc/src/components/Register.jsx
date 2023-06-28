@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { getAuth, createUserWithEmailAndPassword } from "firebase/auth";
-import { secret } from "../secret";
+import { inviteCode } from "../secret";
 
 const Register = () => {
   const auth = getAuth();
@@ -12,7 +12,7 @@ const Register = () => {
 
   const register = (e) => {
     e.preventDefault();
-    if (secretKey !== secret) {
+    if (secretKey !== inviteCode) {
       alert("invalid invite code, please try again");
       setSecretKey("");
       return;

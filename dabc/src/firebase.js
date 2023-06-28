@@ -1,7 +1,8 @@
 import { initializeApp } from "firebase/app";
+import { apiKey } from "./secret";
 
 const firebaseConfig = {
-  apiKey: "AIzaSyBZLLVrCqB0iq3GcDdY9RsthS56_et_kvc",
+  apiKey: apiKey,
 
   authDomain: "get-that-booze-mike.firebaseapp.com",
 
