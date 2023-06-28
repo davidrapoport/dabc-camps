@@ -9,10 +9,8 @@ const Home = () => {
 
   onAuthStateChanged(auth, (user) => {
     if (user) {
-      //user is logged in, all good
       setIsLoggedIn(true);
     } else {
-      //user is not logged in, send them to /login
       navigate("/login");
     }
   });
