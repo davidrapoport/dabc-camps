@@ -5,6 +5,7 @@ import {
   signInWithEmailAndPassword,
   onAuthStateChanged,
 } from "firebase/auth";
+import "./Login.css";
 
 const Login = () => {
   const auth = getAuth();
@@ -49,25 +50,36 @@ const Login = () => {
 
   return (
     <div>
-      <p>{errorCode}</p>
-      <form>
-        <label htmlFor="email">Email:</label>
+      <p className="error-message">{errorCode}</p>
+      <form className="login-form">
+        <label htmlFor="email" className="label">
+          Email:
+        </label>
         <input
+          className="input"
           type="email"
           name="email"
           value={email}
           onChange={(e) => setEmail(e.target.value)}
         ></input>
-        <label htmlFor="pass">Password:</label>
+        <label htmlFor="pass" className="label">
+          Password:
+        </label>
         <input
+          className="input"
           type="password"
           value={password}
           onChange={(e) => setPassword(e.target.value)}
         ></input>
-        <button onClick={login}>Login</button>
+        <button onClick={login} className="login-button">
+          Login
+        </button>
       </form>
       <p>
-        New User? Register here: <Link to="/register">Register</Link>
+        New User? Register here:{" "}
+        <Link to="/register" className="register-link">
+          Register
+        </Link>
       </p>
     </div>
   );
