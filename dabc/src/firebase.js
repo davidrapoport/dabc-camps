@@ -1,5 +1,15 @@
 import { initializeApp } from "firebase/app";
+<<<<<<< HEAD
 import { getFirestore } from "firebase/firestore";
+=======
+import {
+  getFirestore,
+  collection,
+  doc,
+  setDoc,
+  addDoc,
+} from "firebase/firestore";
+>>>>>>> help meeeeeee
 import { apiKey } from "./secret";
 
 const firebaseConfig = {
