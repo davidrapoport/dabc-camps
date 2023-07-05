@@ -8,7 +8,6 @@ import {
 import Register from "./components/Register";
 import Login from "./components/Login";
 import Home from "./components/Home";
-import { app } from "./firebase";
 
 function App() {
   return (
