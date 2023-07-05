@@ -1,4 +1,11 @@
 import { initializeApp } from "firebase/app";
+import {
+  getFirestore,
+  collection,
+  doc,
+  setDoc,
+  addDoc,
+} from "firebase/firestore";
 import { apiKey } from "./secret";
 
 const firebaseConfig = {
@@ -16,5 +23,14 @@ const firebaseConfig = {
 };
 
 const app = initializeApp(firebaseConfig);
+const db = getFirestore(app);
 
-export { app };
+const testDoc = async () => {
+  const docRef = await addDoc(collection(db, "forms"), {
+    SKU: 420,
+    alName: "420 Blaze It",
+    orderQty: 777,
+  });
+};
+
+export { app, db, testDoc };

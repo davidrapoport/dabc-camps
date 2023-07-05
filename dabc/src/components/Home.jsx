@@ -3,6 +3,7 @@ import { getAuth, onAuthStateChanged, signOut } from "firebase/auth";
 import { useNavigate } from "react-router-dom";
 import { read, utils } from "xlsx";
 import "./Home.css";
+import { testDoc } from "../firebase";
 
 const Home = () => {
   const auth = getAuth();
@@ -25,6 +26,7 @@ const Home = () => {
 
   const addToDb = async (e) => {
     e.preventDefault();
+    testDoc();
     setErrorCode("");
     if (inputRef.current.files.length !== 1) {
       setErrorCode("no file chosen for upload");
