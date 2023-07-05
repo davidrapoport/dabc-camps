@@ -1,4 +1,4 @@
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { getAuth, onAuthStateChanged, signOut } from "firebase/auth";
 import { useNavigate } from "react-router-dom";
 import "./Home.css";
@@ -6,24 +6,29 @@ import "./Home.css";
 const Home = () => {
   const auth = getAuth();
   const [isLoggedIn, setIsLoggedIn] = useState(false);
-  const [errorCode, setErrorCode] = useState("no err");
-  const [testText, setTestText] = useState("");
+  const [errorCode, setErrorCode] = useState("");
   const navigate = useNavigate();
 
   const inputRef = useRef();
 
-  onAuthStateChanged(auth, (user) => {
-    if (user) {
-      setIsLoggedIn(true);
-      setErrorCode("this shit is crazy");
-    } else {
-      navigate("/login");
-    }
-  });
+  useEffect(() => {
+    onAuthStateChanged(auth, (user) => {
+      if (user) {
+        setIsLoggedIn(true);
+      } else {
+        navigate("/login");
+      }
+    });
+  }, [navigate]);
 
   const addToDb = (e) => {
     e.preventDefault();
-    setErrorCode("very Error");
+    setErrorCode("");
+    if (inputRef.current.files.length !== 1) {
+      setErrorCode("no file chosen for upload");
+      return;
+    }
+    //TODO:
     return;
   };
 
@@ -42,16 +47,8 @@ const Home = () => {
         <form onSubmit={addToDb}>
           <label>
             Upload file:
-            <input type="file" ref={inputRef}></input>
+            <input type="file" ref={inputRef} accept=".xlsx,.xls"></input>
           </label>
-          <input
-            type="text"
-            value={testText}
-            onChange={(e) => {
-              console.log("typing");
-              //setTestText(e.target.value);
-            }}
-          ></input>
           <button>Submit</button>
         </form>
         <button onClick={logOut} className="logout-button">
