@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 import { getAuth, onAuthStateChanged, signOut } from "firebase/auth";
 import { useNavigate } from "react-router-dom";
+import { read, utils } from "xlsx";
 import "./Home.css";
 
 const Home = () => {
@@ -19,16 +20,21 @@ const Home = () => {
         navigate("/login");
       }
     });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [navigate]);
 
-  const addToDb = (e) => {
+  const addToDb = async (e) => {
     e.preventDefault();
     setErrorCode("");
     if (inputRef.current.files.length !== 1) {
       setErrorCode("no file chosen for upload");
       return;
     }
-    //TODO:
+    const file = await inputRef.current.files[0].arrayBuffer();
+    const wb = read(file);
+    const ws = wb.Sheets[wb.SheetNames[0]];
+    const data = utils.sheet_to_json(ws);
+    console.log(data);
     return;
   };
 
