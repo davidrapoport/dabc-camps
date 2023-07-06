@@ -10,18 +10,19 @@ const Home = () => {
   const auth = getAuth();
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [errorCode, setErrorCode] = useState("");
+  const [user, setUser] = useState({});
   const navigate = useNavigate();
   const inputRef = useRef();
 
   useEffect(() => {
     onAuthStateChanged(auth, (user) => {
       if (user) {
+        setUser(user.toJSON().email);
         setIsLoggedIn(true);
       } else {
         navigate("/login");
       }
     });
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [navigate]);
 
   const addToDb = async (e) => {
@@ -35,20 +36,23 @@ const Home = () => {
     const wb = read(file);
     const ws = wb.Sheets[wb.SheetNames[0]];
     const data = utils.sheet_to_json(ws);
-    const orderObj = {};
-    data
-      .filter((item) => {
-        if (item["Order Qty"] > 0) {
-          return true;
-        }
-        return false;
-      })
-      .forEach((item, index) => {
-        orderObj[index] = item;
-      });
+    const date = new Date().toLocaleString();
+    const input = data.filter((item) => {
+      if (item["Order Qty"] > 0) {
+        return true;
+      }
+      return false;
+    });
+    const formattedDoc = {
+      user,
+      date,
+      scrapingCompleted: false,
+      input,
+      output: {},
+    };
     try {
-      const name = new Date().toLocaleString().replaceAll("/", "-");
-      await setDoc(doc(db, "forms", name), orderObj);
+      const name = date.replaceAll("/", "-");
+      await setDoc(doc(db, "forms", name), formattedDoc);
     } catch (e) {
       console.log(e);
     }
