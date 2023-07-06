@@ -2,6 +2,8 @@ import { useEffect, useRef, useState } from "react";
 import { getAuth, onAuthStateChanged, signOut } from "firebase/auth";
 import { useNavigate } from "react-router-dom";
 import { read, utils } from "xlsx";
+import { doc, setDoc } from "firebase/firestore";
+import { db } from "../firebase";
 import "./Home.css";
 
 const Home = () => {
@@ -9,7 +11,6 @@ const Home = () => {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [errorCode, setErrorCode] = useState("");
   const navigate = useNavigate();
-
   const inputRef = useRef();
 
   useEffect(() => {
@@ -34,7 +35,23 @@ const Home = () => {
     const wb = read(file);
     const ws = wb.Sheets[wb.SheetNames[0]];
     const data = utils.sheet_to_json(ws);
-    console.log(data);
+    const orderObj = {};
+    data
+      .filter((item) => {
+        if (item["Order Qty"] > 0) {
+          return true;
+        }
+        return false;
+      })
+      .forEach((item, index) => {
+        orderObj[index] = item;
+      });
+    try {
+      const name = new Date().toLocaleString().replaceAll("/", "-");
+      await setDoc(doc(db, "forms", name), orderObj);
+    } catch (e) {
+      console.log(e);
+    }
     return;
   };
 
@@ -43,7 +60,9 @@ const Home = () => {
       .then(() => {
         navigate("/login");
       })
-      .catch((err) => {});
+      .catch((err) => {
+        setErrorCode(err.message);
+      });
   };
 
   return isLoggedIn ? (
