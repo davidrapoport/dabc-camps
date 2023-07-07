@@ -10,14 +10,12 @@ const Home = () => {
   const auth = getAuth();
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [errorCode, setErrorCode] = useState("");
-  const [user, setUser] = useState({});
   const navigate = useNavigate();
   const inputRef = useRef();
 
   useEffect(() => {
     onAuthStateChanged(auth, (user) => {
       if (user) {
-        setUser(user.toJSON().email);
         setIsLoggedIn(true);
       } else {
         navigate("/login");
@@ -49,7 +47,7 @@ const Home = () => {
         return item;
       });
     const formattedDoc = {
-      user,
+      user: auth.currentUser.uid,
       date,
       scrapingCompleted: false,
       input,
