@@ -2,7 +2,7 @@ import { useEffect, useRef, useState } from "react";
 import { getAuth, onAuthStateChanged, signOut } from "firebase/auth";
 import { useNavigate } from "react-router-dom";
 import { read, utils } from "xlsx";
-import { doc, setDoc } from "firebase/firestore";
+import { collection, doc, addDoc } from "firebase/firestore";
 import { db } from "../firebase";
 import "./Home.css";
 
@@ -36,7 +36,7 @@ const Home = () => {
     const wb = read(file);
     const ws = wb.Sheets[wb.SheetNames[0]];
     const data = utils.sheet_to_json(ws);
-    const date = new Date().toLocaleString();
+    const date = new Date().toISOString();
     const input = data.filter((item) => {
       if (item["Order Qty"] > 0) {
         return true;
@@ -51,8 +51,7 @@ const Home = () => {
       output: {},
     };
     try {
-      const name = date.replaceAll("/", "-");
-      await setDoc(doc(db, "forms", name), formattedDoc);
+      await addDoc(collection(db, "forms"), formattedDoc);
     } catch (e) {
       console.log(e);
     }
