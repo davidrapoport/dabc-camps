@@ -37,12 +37,17 @@ const Home = () => {
     const ws = wb.Sheets[wb.SheetNames[0]];
     const data = utils.sheet_to_json(ws);
     const date = new Date().toISOString();
-    const input = data.filter((item) => {
-      if (item["Order Qty"] > 0) {
-        return true;
-      }
-      return false;
-    });
+    const input = data
+      .filter((item) => {
+        if (item["Order Qty"] > 0) {
+          return true;
+        }
+        return false;
+      })
+      .map((item) => {
+        item.SKU = item.SKU.toString().padStart(6, "0");
+        return item;
+      });
     const formattedDoc = {
       user,
       date,
