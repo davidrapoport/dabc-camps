@@ -5,7 +5,6 @@ import { read, utils } from "xlsx";
 import { doc, setDoc } from "firebase/firestore";
 import { db } from "../firebase";
 import "./Home.css";
-import { testDoc } from "../firebase";
 
 const Home = () => {
   const auth = getAuth();
@@ -28,7 +27,6 @@ const Home = () => {
 
   const addToDb = async (e) => {
     e.preventDefault();
-    testDoc();
     setErrorCode("");
     if (inputRef.current.files.length !== 1) {
       setErrorCode("no file chosen for upload");
