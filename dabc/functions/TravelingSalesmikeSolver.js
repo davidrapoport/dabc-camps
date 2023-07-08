@@ -1,0 +1,121 @@
+const { logger } = require("firebase-functions/v1");
+
+// inputs:
+// quantitiesNeeded:[{name, sku, quantity}]
+// itemAvailability:{sku: {
+//    name, quantityNeeded, availability {
+//      storeId: quantityAvailable
+//  }
+// }
+//}
+//
+// Returns a list (max 5 entries) of options for getting all the inventory,
+
+// sorted based on Mike's priority list.
+exports.findBestRoute = function (quantitiesNeeded, itemAvailability) {
+  logger.info("Starting route store search algorithm");
+  // Remap to key by storeId for convenience.
+  const storeQuantities = remapItemAvailability(itemAvailability);
+
+  // Returns a list of store groupings to check to see if together they contain
+  // all the needed inventory.
+  const storesToCheck = getStoresToCheck();
+  logger.log(storesToCheck.length);
+  let i = 0;
+  const outputStores = [];
+  while (i < storesToCheck.length && outputStores.length < 5) {
+    if (visitStores(storesToCheck[i], quantitiesNeeded, storeQuantities)) {
+      outputStores.push(storesToCheck[i]);
+    }
+    i++;
+  }
+};
+
+// input:
+// itemAvailability:{sku: {
+//    name, quantityNeeded, availability {
+//      storeId: quantityAvailable
+//  }
+// }
+//}
+//
+// Returns: {storeId: {sku: quantityAvailable}}
+function remapItemAvailability(itemAvailability) {}
+
+// input:
+// storesToCheck: [storeId]
+// quantitiesNeeded:[{name, sku, quantity}]
+// storeQuantities: {storeId: {sku: quantityAvailable}}
+//
+// returns: bool
+function visitStores(storesToCheck, quantitiesNeeded, storeQuantities) {
+  // Nick. I would recommend you make a copy of quantitiesNeeded and
+  // subtract all the relevantStoreQuantities. Then if all the items in
+  // quantitiesNeeded <=0, you'll know you've found everything you need.
+  //
+  // Caveat here is to make sure you're not mutating quantitiesNeeded when
+  // you're doing the subtraction.
+  return false;
+}
+
+// returns: [[storeId]] ordered based on Mike's priority list
+// Currently returns 467 different combinations of stores.
+// This should be feasible to bruteforce without much issue.
+function getStoresToCheck() {
+  const aStores = ["0015", "0029", "0016", "0033"];
+  const bStores = ["0025", "0041", "0035", "0013"];
+  const cStores = ["0002", "0004", "0009", "0051", "0003"];
+  //   const dStores = [
+  //     "0034",
+  //     "0036",
+  //     "0037",
+  //     "0038",
+  //     "0001",
+  //     "0012",
+  //     "0014",
+  //     "0026",
+  //     "0046",
+  //   ];
+  let storesToCheck = [];
+  storesToCheck.push(...aStores.map((store) => [store]));
+  storesToCheck.push(...combinationLengthTwo(aStores));
+  storesToCheck.push(...bStores.map((store) => [store]));
+  storesToCheck.push(...combinationLengthTwo(aStores.concat(bStores)));
+  storesToCheck.push(...combinationLengthThree(aStores.concat(bStores)));
+  storesToCheck.push(...cStores.map((store) => [store]));
+  storesToCheck.push(
+    ...combinationLengthTwo(aStores.concat(bStores).concat(cStores))
+  );
+  storesToCheck.push(
+    ...combinationLengthThree(aStores.concat(bStores).concat(cStores))
+  );
+  return storesToCheck;
+}
+
+function combinationLengthTwo(list) {
+  const output = [];
+  if (list.length < 2) {
+    return output;
+  }
+  for (let i = 0; i < list.length - 1; i++) {
+    for (let j = i + 1; j < list.length; j++) {
+      output.push([list[i], list[j]]);
+    }
+  }
+  return output;
+}
+
+function combinationLengthThree(list) {
+  const output = [];
+  if (list.length < 3) {
+    return output;
+  }
+  for (let i = 0; i < list.length - 2; i++) {
+    for (let j = i + 1; j < list.length - 1; j++) {
+      for (let k = j + 1; k < list.length; k++) {
+        output.push([list[i], list[j], list[k]]);
+      }
+    }
+  }
+  return output;
+}
