@@ -42,7 +42,7 @@ exports.findBestRoute = function (quantitiesNeeded, itemAvailability) {
 //}
 //
 // Returns: {storeId: {sku: quantityAvailable}}
-function remapItemAvailability(itemAvailability) {}
+exports.remapItemAvailability = function (itemAvailability) {};
 
 // input:
 // storesToCheck: [storeId]
