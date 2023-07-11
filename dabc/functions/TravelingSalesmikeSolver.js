@@ -1,3 +1,4 @@
+/* eslint-disable */
 const { logger } = require("firebase-functions/v1");
 
 // inputs:
@@ -42,7 +43,24 @@ exports.findBestRoute = function (quantitiesNeeded, itemAvailability) {
 //}
 //
 // Returns: {storeId: {sku: quantityAvailable}}
-exports.remapItemAvailability = function (itemAvailability) {};
+exports.remapItemAvailability = function (itemAvailability) {
+  const storeIdObj = {};
+  for (const sku in itemAvailability) {
+    for (const store in itemAvailability[sku]["availability"]) {
+      if (storeIdObj[store]) {
+        storeIdObj[store] = {
+          ...storeIdObj[store],
+          [sku]: parseInt(itemAvailability[sku]["availability"][store]),
+        };
+      } else {
+        storeIdObj[store] = {
+          [sku]: parseInt(itemAvailability[sku]["availability"][store]),
+        };
+      }
+    }
+  }
+  return storeIdObj;
+};
 
 // input:
 // storesToCheck: [storeId]
@@ -57,6 +75,23 @@ function visitStores(storesToCheck, quantitiesNeeded, storeQuantities) {
   //
   // Caveat here is to make sure you're not mutating quantitiesNeeded when
   // you're doing the subtraction.
+
+  // in progress:
+  // for (const storeId of storesToCheck) {
+  //   let quantCopy = structuredClone(quantitiesNeeded);
+  //   for (const item of quantCopy) {
+  //     let sku = quantCopy[item]["sku"];
+  //     quantCopy[item]["qty"] -= storeQuantities[storeId][sku];
+  //   }
+  //   let gotEm = true;
+  //   for (const item of quantCopy) {
+  //     if (quantCopy[item]["qty"] > 0) {
+  //       gotEm = false;
+  //       break;
+  //     }
+  //   }
+  //   if (gotEm) return true;
+  // }
   return false;
 }
 

@@ -1,3 +1,4 @@
+/* eslint-disable quote-props */
 const {
   findBestRoute,
   remapItemAvailability,
@@ -33,7 +34,7 @@ test("Correctly remaps item availability", () => {
   const expected = {
     "0001": { 1: 42, 9: 12 },
     "0002": { 1: 47, 4: 20, 9: 4 },
-    "0008": { 4: 24 },
+    "0008": { 4: 18 },
   };
-  expect(remapItemAvailability(input)).toBe(expected);
+  expect(remapItemAvailability(input)).toStrictEqual(expected);
 });
