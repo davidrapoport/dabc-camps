@@ -4,6 +4,7 @@ const {
   remapItemAvailability,
   visitStores,
 } = require("../TravelingSalesmikeSolver");
+const { testOutputs, testInputs } = require("../testData");
 
 test("Correctly remaps item availability", () => {
   const input = {
@@ -139,4 +140,13 @@ test("correctly determins if stores contain all needed items", () => {
       remapItemAvailability(input)
     )
   ).toBe(false);
+});
+// tests run well and pass when below test is commented out
+test("Correctly outputs list of stores with stock", () => {
+  const input = testInputs.forEach((arr) => {
+    return { sku: arr[0], name: arr[1], qty: arr[2] };
+  });
+  // not sure what it should expect cause doing this process manually is such a pain in the ass Mike's a saint
+  const expected = [];
+  expect(findBestRoute(input, testOutputs)).toStrictEqual(expected);
 });
