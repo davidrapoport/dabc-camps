@@ -10,7 +10,6 @@ const { logger } = require("firebase-functions/v1");
 //}
 //
 // Returns a list (max 5 entries) of options for getting all the inventory,
-
 // sorted based on Mike's priority list.
 exports.findBestRoute = function (quantitiesNeeded, itemAvailability) {
   logger.info("Starting route store search algorithm");
@@ -20,7 +19,6 @@ exports.findBestRoute = function (quantitiesNeeded, itemAvailability) {
   // Returns a list of store groupings to check to see if together they contain
   // all the needed inventory.
   const storesToCheck = getStoresToCheck();
-  logger.log(storesToCheck.length);
   let i = 0;
   const outputStores = [];
   while (i < storesToCheck.length && outputStores.length < 5) {
@@ -29,6 +27,10 @@ exports.findBestRoute = function (quantitiesNeeded, itemAvailability) {
     }
     i++;
   }
+  // TODO: Output some info about how much booze to get from which stores.
+  // eg. If Mike only needs 1 bottle of Jim Beam from 0004, maybe he
+  // decides not to go there at all.
+  return outputStores;
 };
 
 // input:
@@ -89,7 +91,18 @@ function getStoresToCheck() {
   storesToCheck.push(
     ...combinationLengthThree(aStores.concat(bStores).concat(cStores))
   );
-  return storesToCheck;
+
+  const dedupedStores = [];
+  const deduper = new Set();
+  for (const store of storesToCheck) {
+    const key = store.join(",");
+    if (!deduper.has(key)) {
+      dedupedStores.push(store);
+      deduper.push(key);
+    }
+  }
+
+  return dedupedStores;
 }
 
 function combinationLengthTwo(list) {

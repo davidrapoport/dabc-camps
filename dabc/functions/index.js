@@ -1,6 +1,7 @@
 const functions = require("firebase-functions");
 const { scrapeStoreInfoForItem } = require("./scraper");
-const { testInputs } = require("./testData");
+const { testInputs, testOutputs } = require("./testData");
+const { findBestRoute } = require("./TravelingSalesmikeSolver");
 const DEV_MODE = true;
 
 exports.getItemAvailability = functions.https.onRequest(
@@ -23,3 +24,12 @@ exports.getItemAvailability = functions.https.onRequest(
     response.status(200).send(output);
   }
 );
+
+exports.runTestMode = functions.https.onRequest(async (request, response) => {
+  // http://127.0.0.1:5001/get-that-booze-mike/us-central1/runTestMode
+  let output = [];
+  if (DEV_MODE) {
+    output = findBestRoute(testInputs, testOutputs);
+  }
+  response.status(200).send(output);
+});
