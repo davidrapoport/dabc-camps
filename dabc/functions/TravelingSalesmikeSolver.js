@@ -68,7 +68,11 @@ exports.remapItemAvailability = function (itemAvailability) {
 // storeQuantities: {storeId: {sku: quantityAvailable}}
 //
 // returns: bool
-function visitStores(storesToCheck, quantitiesNeeded, storeQuantities) {
+exports.visitStores = function (
+  storesToCheck,
+  quantitiesNeeded,
+  storeQuantities
+) {
   // Nick. I would recommend you make a copy of quantitiesNeeded and
   // subtract all the relevantStoreQuantities. Then if all the items in
   // quantitiesNeeded <=0, you'll know you've found everything you need.
@@ -76,24 +80,25 @@ function visitStores(storesToCheck, quantitiesNeeded, storeQuantities) {
   // Caveat here is to make sure you're not mutating quantitiesNeeded when
   // you're doing the subtraction.
 
-  // in progress:
-  // for (const storeId of storesToCheck) {
-  //   let quantCopy = structuredClone(quantitiesNeeded);
-  //   for (const item of quantCopy) {
-  //     let sku = quantCopy[item]["sku"];
-  //     quantCopy[item]["qty"] -= storeQuantities[storeId][sku];
-  //   }
-  //   let gotEm = true;
-  //   for (const item of quantCopy) {
-  //     if (quantCopy[item]["qty"] > 0) {
-  //       gotEm = false;
-  //       break;
-  //     }
-  //   }
-  //   if (gotEm) return true;
-  // }
+  for (const storeId of storesToCheck) {
+    let quantCopy = structuredClone(quantitiesNeeded);
+    for (const item of quantCopy) {
+      let sku = item["sku"];
+      if (storeQuantities[storeId][sku]) {
+        item["qty"] -= storeQuantities[storeId][sku];
+      }
+    }
+    let gotEm = true;
+    for (const item of quantCopy) {
+      if (item["qty"] > 0) {
+        gotEm = false;
+        break;
+      }
+    }
+    if (gotEm) return true;
+  }
   return false;
-}
+};
 
 // returns: [[storeId]] ordered based on Mike's priority list
 // Currently returns 467 different combinations of stores.
