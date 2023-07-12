@@ -27,7 +27,7 @@ const Home = () => {
     e.preventDefault();
     setErrorCode("");
     if (inputRef.current.files.length !== 1) {
-      setErrorCode("no file chosen for upload");
+      setErrorCode("No file chosen for upload");
       return;
     }
     const file = await inputRef.current.files[0].arrayBuffer();
@@ -43,9 +43,18 @@ const Home = () => {
         return false;
       })
       .map((item) => {
-        item.SKU = item.SKU.toString().padStart(6, "0");
         return item;
+      })
+      .map((item) => {
+        // Change the field names to make them more consistent
+        // with best practices.
+        const newItem = {};
+        newItem.SKU = item.SKU.toString().padStart(6, "0");
+        newItem.quantity = item["Order Qty"];
+        newItem.name = item["AL Name"];
+        return newItem;
       });
+
     const formattedDoc = {
       user: auth.currentUser.uid,
       date,
