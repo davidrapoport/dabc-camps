@@ -69,20 +69,22 @@ const visitStores = function (
   quantitiesNeeded,
   storeQuantities
 ) {
+  // We need to make a deep copy to ensure that we don't mutate the original.
+  let quantitiesCopy = JSON.parse(JSON.stringify(quantitiesNeeded));
   for (const storeId of storesToCheck) {
     // Some stores in our store list may have no inventory.
     if (!storeQuantities[storeId]) {
       return;
     }
-    for (let i = 0; i < quantitiesNeeded.length; i++) {
-      let item = quantitiesNeeded[i];
-      let sku = item[0];
+    for (let i = 0; i < quantitiesCopy.length; i++) {
+      let item = quantitiesCopy[i];
+      const sku = item[0];
       if (storeQuantities[storeId][sku]) {
         item[2] -= storeQuantities[storeId][sku];
       }
     }
     let gotEm = true;
-    for (const item of quantitiesNeeded) {
+    for (const item of quantitiesCopy) {
       if (item[2] > 0) {
         gotEm = false;
         break;
