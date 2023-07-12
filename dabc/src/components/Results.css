@@ -1,0 +1,38 @@
+.results-container {
+  max-width: 600px;
+  margin: 0 auto;
+  padding: 20px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+}
+
+.results-title {
+  text-align: center;
+}
+
+.no-results {
+  text-align: center;
+  font-weight: bold;
+  color: red;
+}
+
+.form-entry {
+  margin-bottom: 20px;
+}
+
+.form-date {
+  margin-bottom: 10px;
+}
+
+.form-section-title {
+  margin-bottom: 5px;
+}
+
+.form-list {
+  list-style: none;
+  padding-left: 0;
+}
+
+.form-item {
+  margin-bottom: 5px;
+}

@@ -3,6 +3,7 @@ import { collection, query, where, onSnapshot } from "firebase/firestore";
 import { db } from "../firebase";
 import { useNavigate } from "react-router-dom";
 import { getAuth, onAuthStateChanged } from "firebase/auth";
+import "./Results.css";
 
 const Results = () => {
   // TODO(nick): add isLoading and a spinner.
@@ -27,7 +28,7 @@ const Results = () => {
         navigate("/login");
       }
     });
-  }, [navigate]);
+  }, [auth, navigate]);
 
   useEffect(() => {
     if (!userId) {
@@ -61,34 +62,35 @@ const Results = () => {
   }, [userId]);
 
   if (!forms.length) {
-    return <p>No Results yet</p>;
+    return <p className="no-results">No Results yet</p>;
   }
+
   return (
-    <div>
-      <h2>Forms</h2>
+    <div className="results-container">
+      <h2 className="results-title">Forms</h2>
       {forms.map((form) => (
-        <div key={form.id}>
-          <h3>Upload time: {form.date}</h3>
+        <div key={form.id} className="form-entry">
+          <h3 className="form-date">Upload time: {form.date}</h3>
           <div>
-            <h4>Input:</h4>
-            <ul>
+            <h4 className="form-section-title">Input:</h4>
+            <ul className="form-list">
               {form.input.map((item) => (
-                <li key={item.SKU}>
+                <li key={item.SKU} className="form-item">
                   SKU: {item.SKU}, Name: {item.name}, Quantity: {item.quantity}
                 </li>
               ))}
             </ul>
           </div>
           <div>
-            <h4>Output:</h4>
-            <ul>
-              <li>
+            <h4 className="form-section-title">Output:</h4>
+            <ul className="form-list">
+              <li className="form-item">
                 <span>{form.output.topStores.join(", ")} </span>
               </li>
-              <li>
+              <li className="form-item">
                 <span>{form.output.stores2.join(", ")} </span>
               </li>
-              <li>
+              <li className="form-item">
                 <span>{form.output.stores3.join(", ")} </span>
               </li>
             </ul>
