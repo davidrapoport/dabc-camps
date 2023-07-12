@@ -1,3 +1,9 @@
+.body {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
 .home-page {
   max-width: 600px;
   margin: auto;
@@ -42,7 +48,9 @@ h2 {
 
 .logout-button {
   display: block;
-  width: 100%;
+  width: 160px;
+  align-items: center;
+  justify-content: center;
   margin-top: 20px;
   padding: 10px;
   background-color: #f44336;
@@ -54,4 +62,25 @@ h2 {
 
 .logout-button:hover {
   background-color: #d32f2f;
+}
+
+.error-message {
+  color: red;
+  margin-bottom: 10px;
+}
+
+.success-message {
+  color: green;
+  margin-top: 10px;
+}
+
+.spinner-container {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-top: 10px;
+}
+
+.upload-message {
+  margin-left: 10px;
 }
