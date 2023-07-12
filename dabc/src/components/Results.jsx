@@ -49,6 +49,7 @@ const Results = () => {
           id: doc.id,
           input: form.input,
           output: form.output,
+          date: new Date(form.date).toLocaleString(),
         });
       });
       setForms(updatedForms);
