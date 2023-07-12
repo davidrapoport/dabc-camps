@@ -1,4 +1,5 @@
 const functions = require("firebase-functions");
+const { onDocumentCreated } = require("firebase-functions/v2/firestore");
 const { scrapeStoreInfoForItem } = require("./scraper");
 const { testInputs, testOutputs } = require("./testData");
 const { findBestRoute } = require("./TravelingSalesmikeSolver");
@@ -32,4 +33,24 @@ exports.runTestMode = functions.https.onRequest(async (request, response) => {
     output = findBestRoute(testInputs, testOutputs);
   }
   response.status(200).send(output);
+});
+
+exports.runOnNewData = onDocumentCreated("forms/{id}", async (event) => {
+  console.log(event);
+  const data = event.data.data();
+  const quantitiesNeeded = data.input;
+  const storeAvailability = {};
+  if (DEV_MODE) {
+    return;
+  }
+  for (const item of quantitiesNeeded) {
+    const message = await scrapeStoreInfoForItem(item.SKU);
+    storeAvailability[item.SKU] = {
+      name: item.name,
+      qty: item.quantity,
+      availability: message,
+    };
+  }
+  const output = findBestRoute(quantitiesNeeded, storeAvailability);
+  return event.data.ref.update({ output: output, scrapingCompleted: true });
 });
