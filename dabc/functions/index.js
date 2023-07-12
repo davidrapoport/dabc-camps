@@ -36,12 +36,19 @@ exports.runTestMode = functions.https.onRequest(async (request, response) => {
 });
 
 exports.runOnNewData = onDocumentCreated("forms/{id}", async (event) => {
-  console.log(event);
   const data = event.data.data();
   const quantitiesNeeded = data.input;
   const storeAvailability = {};
   if (DEV_MODE) {
-    return;
+    // TODO(nick): Change the output format to be an object like so
+    return event.data.ref.update({
+      output: {
+        topStores: ["0015"],
+        stores2: ["0015", "0023"],
+        stores3: ["0043", "0025", "0001"],
+      },
+      scrapingCompleted: true,
+    });
   }
   for (const item of quantitiesNeeded) {
     const message = await scrapeStoreInfoForItem(item.SKU);
