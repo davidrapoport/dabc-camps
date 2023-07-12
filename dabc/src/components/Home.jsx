@@ -1,6 +1,6 @@
 import React, { useEffect, useRef, useState } from "react";
 import { getAuth, onAuthStateChanged, signOut } from "firebase/auth";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { read, utils } from "xlsx";
 import { collection, doc, addDoc } from "firebase/firestore";
 import { db } from "../firebase";
@@ -129,13 +129,19 @@ const Home = () => {
       </div>
     );
   }
+  // TODO(nick): Add css for the footer so that the
+  // two buttons are side by side (and make the
+  // results link a button too)
   return (
     <div className="body">
       <h2>DABC Route Finding Tool</h2>
       {content}
-      <button onClick={logOut} className="logout-button">
-        Log Out
-      </button>
+      <div className="footer">
+        <Link to="/results">See Results from past runs</Link>
+        <button onClick={logOut} className="logout-button">
+          Log Out
+        </button>
+      </div>
     </div>
   );
 };
