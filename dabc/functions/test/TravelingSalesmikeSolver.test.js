@@ -3,8 +3,10 @@ const {
   findBestRoute,
   remapItemAvailability,
   visitStores,
+  getStoresToCheck,
 } = require("../TravelingSalesmikeSolver");
 const { testOutputs, testInputs } = require("../testData");
+const { logger } = require("firebase-functions/v1");
 
 test("Correctly remaps item availability", () => {
   const input = {
@@ -167,8 +169,7 @@ test("A Stores preferred", () => {
   // The store preference list is
   // A stores, Pairs of 2 A stores, B stores, Pairs of 2 A+B, Pairs of 3 A+B
   const output = findBestRoute(testQuantities, testStoreStock);
-  expect(output.length).toBeGreaterThan(0);
-  expect(output[0]).toStrictEqual(["0015"]);
+  expect(output.topStores).toStrictEqual(["0015"]);
 });
 
 test("Checks A+B Stores", () => {
@@ -199,8 +200,7 @@ test("Checks A+B Stores", () => {
   // The store preference list is
   // A stores, Pairs of 2 A stores, B stores, Pairs of 2 A+B, Pairs of 3 A+B
   const output = findBestRoute(testQuantities, testStoreStock);
-  expect(output.length).toBeGreaterThan(0);
-  expect(output[0]).toStrictEqual(["0015", "0025"]);
+  expect(output.topStores).toStrictEqual(["0015", "0025"]);
 });
 
 test("Checks C Stores", () => {
@@ -238,6 +238,5 @@ test("Checks C Stores", () => {
   // The store preference list is
   // A stores, Pairs of 2 A stores, B stores, Pairs of 2 A+B, Pairs of 3 A+B
   const output = findBestRoute(testQuantities, testStoreStock);
-  expect(output.length).toBeGreaterThan(0);
-  expect(output[0]).toStrictEqual(["0002"]);
+  expect(output.topStores).toStrictEqual(["0002"]);
 });

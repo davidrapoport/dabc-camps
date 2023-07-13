@@ -8,17 +8,19 @@
 //}
 //
 // Returns a list (max 5 entries) of options for getting all the inventory,
+
+const { logger } = require("firebase-functions/v1");
+
 // sorted based on Mike's priority list.
 const findBestRoute = function (quantitiesNeeded, itemAvailability) {
   // Remap to key by storeId for convenience.
   const storeQuantities = remapItemAvailability(itemAvailability);
-
   // Returns a list of store groupings to check to see if together they contain
   // all the needed inventory.
   const storesToCheck = getStoresToCheck();
   let i = 0;
   const outputStores = [];
-  while (i < storesToCheck.length && outputStores.length < 5) {
+  while (i < storesToCheck.length && outputStores.length < 3) {
     if (visitStores(storesToCheck[i], quantitiesNeeded, storeQuantities)) {
       outputStores.push(storesToCheck[i]);
     }
@@ -27,7 +29,23 @@ const findBestRoute = function (quantitiesNeeded, itemAvailability) {
   // TODO: Output some info about how much booze to get from which stores.
   // eg. If Mike only needs 1 bottle of Jim Beam from 0004, maybe he
   // decides not to go there at all.
-  return outputStores;
+  const output = {};
+  if (outputStores.length >= 1) {
+    output["topStores"] = outputStores[0];
+  } else {
+    output["topStores"] = ["NONE"];
+  }
+  if (outputStores.length >= 2) {
+    output["stores2"] = outputStores[1];
+  } else {
+    output["stores2"] = ["NONE"];
+  }
+  if (outputStores.length >= 3) {
+    output["stores3"] = outputStores[2];
+  } else {
+    output["stores3"] = ["NONE"];
+  }
+  return output;
 };
 
 // input:
@@ -74,6 +92,7 @@ const visitStores = function (
   for (const storeId of storesToCheck) {
     // Some stores in our store list may have no inventory.
     if (!storeQuantities[storeId]) {
+      console.log(storesToCheck.join(", "));
       return;
     }
     for (let i = 0; i < quantitiesCopy.length; i++) {
@@ -171,3 +190,4 @@ function combinationLengthThree(list) {
 exports.findBestRoute = findBestRoute;
 exports.remapItemAvailability = remapItemAvailability;
 exports.visitStores = visitStores;
+exports.getStoresToCheck = getStoresToCheck;

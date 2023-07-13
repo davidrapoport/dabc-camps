@@ -110,7 +110,6 @@ function parseDABSResponse(responseText) {
       throw new Error("Unexpected number of columns in row " + row.textContent);
     }
     itemData[rowData[0].textContent] = rowData[5].textContent;
-    logger.info(itemData);
   });
   return itemData;
 }

@@ -67,7 +67,7 @@ const Results = () => {
 
   return (
     <div className="results-container">
-      <h2 className="results-title">Forms</h2>
+      <h2 className="results-title">Results</h2>
       {forms.map((form) => (
         <div key={form.id} className="form-entry">
           <h3 className="form-date">Upload time: {form.date}</h3>
@@ -75,8 +75,8 @@ const Results = () => {
             <h4 className="form-section-title">Input:</h4>
             <ul className="form-list">
               {form.input.map((item) => (
-                <li key={item.SKU} className="form-item">
-                  SKU: {item.SKU}, Name: {item.name}, Quantity: {item.quantity}
+                <li key={item.sku} className="form-item">
+                  SKU: {item.sku}, Name: {item.name}, Quantity: {item.quantity}
                 </li>
               ))}
             </ul>
