@@ -78,14 +78,14 @@ const visitStores = function (
     }
     for (let i = 0; i < quantitiesCopy.length; i++) {
       let item = quantitiesCopy[i];
-      const sku = item[0];
+      const sku = item.sku;
       if (storeQuantities[storeId][sku]) {
-        item[2] -= storeQuantities[storeId][sku];
+        item.quantity -= storeQuantities[storeId][sku];
       }
     }
     let gotEm = true;
     for (const item of quantitiesCopy) {
-      if (item[2] > 0) {
+      if (item.quantity > 0) {
         gotEm = false;
         break;
       }

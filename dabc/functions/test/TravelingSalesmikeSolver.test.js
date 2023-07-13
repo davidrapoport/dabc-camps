@@ -144,10 +144,10 @@ test("Correctly remaps item availability", () => {
 
 test("A Stores preferred", () => {
   testQuantities = [
-    ["038177", "Titos Handmade Vodka (1L)", 1],
-    ["089468", "Lunazul Tequila Reposado", 6],
-    ["019067", "Jim Beam (1L)", 12],
-    ["954782", "Templin Ferda DBL IPA", 96],
+    { sku: "038177", name: "Titos Handmade Vodka (1L)", quantity: 1 },
+    { sku: "089468", name: "Lunazul Tequila Reposado", quantity: 6 },
+    { sku: "019067", name: "Jim Beam (1L)", quantity: 12 },
+    { sku: "954782", name: "Templin Ferda DBL IPA", quantity: 96 },
   ];
   // '0015' is an A and '0025' is a B store.
   testStoreStock = {
@@ -173,10 +173,10 @@ test("A Stores preferred", () => {
 
 test("Checks A+B Stores", () => {
   testQuantities = [
-    ["038177", "Titos Handmade Vodka (1L)", 1],
-    ["089468", "Lunazul Tequila Reposado", 6],
-    ["019067", "Jim Beam (1L)", 12],
-    ["954782", "Templin Ferda DBL IPA", 96],
+    { sku: "038177", name: "Titos Handmade Vodka (1L)", quantity: 1 },
+    { sku: "089468", name: "Lunazul Tequila Reposado", quantity: 6 },
+    { sku: "019067", name: "Jim Beam (1L)", quantity: 12 },
+    { sku: "954782", name: "Templin Ferda DBL IPA", quantity: 96 },
   ];
   // '0015' is an A and '0025' is a B store.
   // Here item 954782 can ONLY be found at store 25,
@@ -201,4 +201,43 @@ test("Checks A+B Stores", () => {
   const output = findBestRoute(testQuantities, testStoreStock);
   expect(output.length).toBeGreaterThan(0);
   expect(output[0]).toStrictEqual(["0015", "0025"]);
+});
+
+test("Checks C Stores", () => {
+  testQuantities = [
+    { sku: "038177", name: "Titos Handmade Vodka (1L)", quantity: 1 },
+    { sku: "089468", name: "Lunazul Tequila Reposado", quantity: 6 },
+    { sku: "019067", name: "Jim Beam (1L)", quantity: 12 },
+    { sku: "954782", name: "Templin Ferda DBL IPA", quantity: 96 },
+  ];
+  // '0015' is an A and '0025' is a B store.
+  // '0002' is a C store.
+  // Only 0002 can fulfill the requirements here.
+  testStoreStock = {
+    "038177": {
+      name: "",
+      quantity: 1,
+      availability: { "0015": 1, "0025": 1, "0002": 100 },
+    },
+    "089468": {
+      name: "",
+      quantity: 6,
+      availability: { "0015": 6, "0025": 6, "0002": 100 },
+    },
+    "019067": {
+      name: "",
+      quantity: 12,
+      availability: { "0015": 1, "0025": 1, "0002": 100 },
+    },
+    954782: {
+      name: "",
+      quantity: 96,
+      availability: { "0015": 1, "0025": 1, "0002": 100 },
+    },
+  };
+  // The store preference list is
+  // A stores, Pairs of 2 A stores, B stores, Pairs of 2 A+B, Pairs of 3 A+B
+  const output = findBestRoute(testQuantities, testStoreStock);
+  expect(output.length).toBeGreaterThan(0);
+  expect(output[0]).toStrictEqual(["0002"]);
 });
