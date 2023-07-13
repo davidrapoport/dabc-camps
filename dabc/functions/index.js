@@ -59,6 +59,5 @@ exports.runOnNewData = onDocumentCreated("forms/{id}", async (event) => {
     };
   }
   const output = findBestRoute(quantitiesNeeded, storeAvailability);
-  functions.logger.log(output);
   return event.data.ref.update({ output: output, scrapingCompleted: true });
 });

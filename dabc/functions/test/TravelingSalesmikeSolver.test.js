@@ -3,10 +3,8 @@ const {
   findBestRoute,
   remapItemAvailability,
   visitStores,
-  getStoresToCheck,
 } = require("../TravelingSalesmikeSolver");
 const { testOutputs, testInputs } = require("../testData");
-const { logger } = require("firebase-functions/v1");
 
 test("Correctly remaps item availability", () => {
   const input = {

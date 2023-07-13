@@ -8,13 +8,11 @@
 //}
 //
 // Returns a list (max 5 entries) of options for getting all the inventory,
-
-const { logger } = require("firebase-functions/v1");
-
 // sorted based on Mike's priority list.
 const findBestRoute = function (quantitiesNeeded, itemAvailability) {
   // Remap to key by storeId for convenience.
   const storeQuantities = remapItemAvailability(itemAvailability);
+
   // Returns a list of store groupings to check to see if together they contain
   // all the needed inventory.
   const storesToCheck = getStoresToCheck();
@@ -92,7 +90,6 @@ const visitStores = function (
   for (const storeId of storesToCheck) {
     // Some stores in our store list may have no inventory.
     if (!storeQuantities[storeId]) {
-      console.log(storesToCheck.join(", "));
       return;
     }
     for (let i = 0; i < quantitiesCopy.length; i++) {
@@ -190,4 +187,3 @@ function combinationLengthThree(list) {
 exports.findBestRoute = findBestRoute;
 exports.remapItemAvailability = remapItemAvailability;
 exports.visitStores = visitStores;
-exports.getStoresToCheck = getStoresToCheck;
