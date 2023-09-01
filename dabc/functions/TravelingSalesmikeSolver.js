@@ -1,5 +1,3 @@
-const { logger } = require("firebase-functions/v1");
-
 // inputs:
 // quantitiesNeeded:[{name, sku, quantity}]
 // itemAvailability:{sku: {
@@ -11,8 +9,7 @@ const { logger } = require("firebase-functions/v1");
 //
 // Returns a list (max 5 entries) of options for getting all the inventory,
 // sorted based on Mike's priority list.
-exports.findBestRoute = function (quantitiesNeeded, itemAvailability) {
-  logger.info("Starting route store search algorithm");
+const findBestRoute = function (quantitiesNeeded, itemAvailability) {
   // Remap to key by storeId for convenience.
   const storeQuantities = remapItemAvailability(itemAvailability);
 
@@ -21,7 +18,7 @@ exports.findBestRoute = function (quantitiesNeeded, itemAvailability) {
   const storesToCheck = getStoresToCheck();
   let i = 0;
   const outputStores = [];
-  while (i < storesToCheck.length && outputStores.length < 5) {
+  while (i < storesToCheck.length && outputStores.length < 3) {
     if (visitStores(storesToCheck[i], quantitiesNeeded, storeQuantities)) {
       outputStores.push(storesToCheck[i]);
     }
@@ -30,7 +27,23 @@ exports.findBestRoute = function (quantitiesNeeded, itemAvailability) {
   // TODO: Output some info about how much booze to get from which stores.
   // eg. If Mike only needs 1 bottle of Jim Beam from 0004, maybe he
   // decides not to go there at all.
-  return outputStores;
+  const output = {};
+  if (outputStores.length >= 1) {
+    output["topStores"] = outputStores[0];
+  } else {
+    output["topStores"] = ["NONE"];
+  }
+  if (outputStores.length >= 2) {
+    output["stores2"] = outputStores[1];
+  } else {
+    output["stores2"] = ["NONE"];
+  }
+  if (outputStores.length >= 3) {
+    output["stores3"] = outputStores[2];
+  } else {
+    output["stores3"] = ["NONE"];
+  }
+  return output;
 };
 
 // input:
@@ -42,7 +55,24 @@ exports.findBestRoute = function (quantitiesNeeded, itemAvailability) {
 //}
 //
 // Returns: {storeId: {sku: quantityAvailable}}
-exports.remapItemAvailability = function (itemAvailability) {};
+const remapItemAvailability = function (itemAvailability) {
+  const storeIdObj = {};
+  for (const sku in itemAvailability) {
+    for (const store in itemAvailability[sku]["availability"]) {
+      if (storeIdObj[store]) {
+        storeIdObj[store] = {
+          ...storeIdObj[store],
+          [sku]: parseInt(itemAvailability[sku]["availability"][store]),
+        };
+      } else {
+        storeIdObj[store] = {
+          [sku]: parseInt(itemAvailability[sku]["availability"][store]),
+        };
+      }
+    }
+  }
+  return storeIdObj;
+};
 
 // input:
 // storesToCheck: [storeId]
@@ -50,15 +80,36 @@ exports.remapItemAvailability = function (itemAvailability) {};
 // storeQuantities: {storeId: {sku: quantityAvailable}}
 //
 // returns: bool
-function visitStores(storesToCheck, quantitiesNeeded, storeQuantities) {
-  // Nick. I would recommend you make a copy of quantitiesNeeded and
-  // subtract all the relevantStoreQuantities. Then if all the items in
-  // quantitiesNeeded <=0, you'll know you've found everything you need.
-  //
-  // Caveat here is to make sure you're not mutating quantitiesNeeded when
-  // you're doing the subtraction.
+const visitStores = function (
+  storesToCheck,
+  quantitiesNeeded,
+  storeQuantities
+) {
+  // We need to make a deep copy to ensure that we don't mutate the original.
+  let quantitiesCopy = JSON.parse(JSON.stringify(quantitiesNeeded));
+  for (const storeId of storesToCheck) {
+    // Some stores in our store list may have no inventory.
+    if (!storeQuantities[storeId]) {
+      return;
+    }
+    for (let i = 0; i < quantitiesCopy.length; i++) {
+      let item = quantitiesCopy[i];
+      const sku = item.sku;
+      if (storeQuantities[storeId][sku]) {
+        item.quantity -= storeQuantities[storeId][sku];
+      }
+    }
+    let gotEm = true;
+    for (const item of quantitiesCopy) {
+      if (item.quantity > 0) {
+        gotEm = false;
+        break;
+      }
+    }
+    if (gotEm) return true;
+  }
   return false;
-}
+};
 
 // returns: [[storeId]] ordered based on Mike's priority list
 // Currently returns 467 different combinations of stores.
@@ -98,7 +149,7 @@ function getStoresToCheck() {
     const key = store.join(",");
     if (!deduper.has(key)) {
       dedupedStores.push(store);
-      deduper.push(key);
+      deduper.add(key);
     }
   }
 
@@ -132,3 +183,7 @@ function combinationLengthThree(list) {
   }
   return output;
 }
+
+exports.findBestRoute = findBestRoute;
+exports.remapItemAvailability = remapItemAvailability;
+exports.visitStores = visitStores;

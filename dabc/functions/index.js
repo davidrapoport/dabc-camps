@@ -3,7 +3,8 @@ const { onDocumentCreated } = require("firebase-functions/v2/firestore");
 const { scrapeStoreInfoForItem } = require("./scraper");
 const { testInputs, testOutputs } = require("./testData");
 const { findBestRoute } = require("./TravelingSalesmikeSolver");
-const DEV_MODE = true;
+
+const DEV_MODE = false;
 
 exports.getItemAvailability = functions.https.onRequest(
   async (request, response) => {
@@ -40,7 +41,6 @@ exports.runOnNewData = onDocumentCreated("forms/{id}", async (event) => {
   const quantitiesNeeded = data.input;
   const storeAvailability = {};
   if (DEV_MODE) {
-    // TODO(nick): Change the output format to be an object like so
     return event.data.ref.update({
       output: {
         topStores: ["0015"],
@@ -51,8 +51,8 @@ exports.runOnNewData = onDocumentCreated("forms/{id}", async (event) => {
     });
   }
   for (const item of quantitiesNeeded) {
-    const message = await scrapeStoreInfoForItem(item.SKU);
-    storeAvailability[item.SKU] = {
+    const message = await scrapeStoreInfoForItem(item.sku);
+    storeAvailability[item.sku] = {
       name: item.name,
       qty: item.quantity,
       availability: message,

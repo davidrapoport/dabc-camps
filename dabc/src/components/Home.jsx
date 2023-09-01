@@ -57,7 +57,7 @@ const Home = () => {
         // Change the field names to make them more consistent
         // with best practices.
         const newItem = {};
-        newItem.SKU = item.SKU.toString().padStart(6, "0");
+        newItem.sku = item.SKU.toString().padStart(6, "0");
         newItem.quantity = item["Order Qty"];
         newItem.name = item["AL Name"];
         return newItem;

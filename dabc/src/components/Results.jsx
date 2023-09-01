@@ -7,14 +7,15 @@ import "./Results.css";
 
 const Results = () => {
   // TODO(nick): add isLoading and a spinner.
-  // TODO(nick): Sort forms by most recent. Only show top 3 most recent.
   // TODO(nick): Add in meta data to make the output look nicer. Examples:
-  // A map of storeId -> Address so that we can display the address alongside
-  // the data.
-  // A list of the storeId -> Inventory at the relevant stores
+  // A list of the storeId -> Inventory missing at the relevant stores
   // relevant stores === the stores in the top 3
   // TODO(nick): Add a back to home button.
   // TODO(nick): Make the input section look nicer.
+  // TODO(nick): Only output 1 run, no need to do many.
+  // TODO: Make a table with columns as SKU, name, quantity needed,
+  // quantity missing from best store, etc.
+  // Make table sortable (sort by available at 15, etc).
   const auth = getAuth();
   const [forms, setForms] = useState([]);
   const [userId, setUserId] = useState();
@@ -67,7 +68,7 @@ const Results = () => {
 
   return (
     <div className="results-container">
-      <h2 className="results-title">Forms</h2>
+      <h2 className="results-title">Results</h2>
       {forms.map((form) => (
         <div key={form.id} className="form-entry">
           <h3 className="form-date">Upload time: {form.date}</h3>
@@ -75,8 +76,8 @@ const Results = () => {
             <h4 className="form-section-title">Input:</h4>
             <ul className="form-list">
               {form.input.map((item) => (
-                <li key={item.SKU} className="form-item">
-                  SKU: {item.SKU}, Name: {item.name}, Quantity: {item.quantity}
+                <li key={item.sku} className="form-item">
+                  SKU: {item.sku}, Name: {item.name}, Quantity: {item.quantity}
                 </li>
               ))}
             </ul>
