@@ -24,25 +24,21 @@ const findBestRoute = function (quantitiesNeeded, itemAvailability) {
     }
     i++;
   }
+  return generateOutputObject(outputStores, quantitiesNeeded, storeQuantities);
+};
+
+const generateOutputObject = function (
+  outputStores,
+  quantitiesNeeded,
+  storeQuantities
+) {
+  // You can't add an array of arrays in firebase.
+  const output = { topStores: outputStores.map((stores) => stores.join(",")) };
+
   // TODO: Output some info about how much booze to get from which stores.
   // eg. If Mike only needs 1 bottle of Jim Beam from 0004, maybe he
   // decides not to go there at all.
-  const output = {};
-  if (outputStores.length >= 1) {
-    output["topStores"] = outputStores[0];
-  } else {
-    output["topStores"] = ["NONE"];
-  }
-  if (outputStores.length >= 2) {
-    output["stores2"] = outputStores[1];
-  } else {
-    output["stores2"] = ["NONE"];
-  }
-  if (outputStores.length >= 3) {
-    output["stores3"] = outputStores[2];
-  } else {
-    output["stores3"] = ["NONE"];
-  }
+  // TODO: Output what is missing from each of the stores in the top 3.
   return output;
 };
 

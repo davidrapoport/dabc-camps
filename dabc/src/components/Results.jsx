@@ -84,22 +84,26 @@ const Results = () => {
           </div>
           <div>
             <h4 className="form-section-title">Output:</h4>
-            <ul className="form-list">
-              <li className="form-item">
-                <span>{form.output.topStores.join(", ")} </span>
-              </li>
-              <li className="form-item">
-                <span>{form.output.stores2.join(", ")} </span>
-              </li>
-              <li className="form-item">
-                <span>{form.output.stores3.join(", ")} </span>
-              </li>
-            </ul>
+            {renderResults(form.output)}
           </div>
         </div>
       ))}
     </div>
   );
+};
+
+const renderResults = function (output) {
+  let results = <p>We were unable to find any stores that matched</p>;
+  if (output.topStores) {
+    results = (
+      <ul className="form-list">
+        {output.topStores.map((stores) => {
+          return <li className="form-item">{stores}</li>;
+        })}
+      </ul>
+    );
+  }
+  return results;
 };
 
 export default Results;
