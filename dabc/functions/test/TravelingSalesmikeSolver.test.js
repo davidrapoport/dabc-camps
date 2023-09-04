@@ -198,7 +198,7 @@ test("Checks A+B Stores", () => {
   // The store preference list is
   // A stores, Pairs of 2 A stores, B stores, Pairs of 2 A+B, Pairs of 3 A+B
   const output = findBestRoute(testQuantities, testStoreStock);
-  expect(output.topStores).toStrictEqual(["0015", "0025"]);
+  expect(output.topStores[0]).toStrictEqual("0015,0025");
 });
 
 test("Checks C Stores", () => {
