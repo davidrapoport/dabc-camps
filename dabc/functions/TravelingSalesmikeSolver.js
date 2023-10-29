@@ -46,7 +46,7 @@ const generateOutputObject = function (
     }
   }
   output["topStores"] = topStores;
-  const data = [];
+  const outputData = [];
   for (const item of quantitiesNeeded) {
     const outputItem = Object.assign({}, item);
     const sku = item["sku"];
@@ -61,9 +61,9 @@ const generateOutputObject = function (
       }
     }
     outputItem["storeData"] = missingFromStore;
-    output[sku] = outputItem;
+    outputData.push(outputItem);
   }
-
+  output["outputData"] = outputData;
   return output;
 };
 
