@@ -77,7 +77,7 @@ const Results = () => {
         <h5>Recommended stores: </h5>
         <ul>
           {scrapeResult.output.recommendedStores.map((storeList) => (
-            <li>{storeList}</li>
+            <li key={storeList}>{storeList}</li>
           ))}
         </ul>
         {renderResults(scrapeResult.output)}
