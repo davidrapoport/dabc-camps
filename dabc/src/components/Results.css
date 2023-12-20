@@ -9,6 +9,11 @@
   text-align: center;
 }
 
+.recommended-stores-container {
+  display: flex;
+  justify-content: center;
+}
+
 .no-results {
   text-align: center;
   font-weight: bold;

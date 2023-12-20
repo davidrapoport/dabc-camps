@@ -18,6 +18,7 @@ const Results = () => {
   // TODO(nick): Add a back to home button..
   const auth = getAuth();
   const [scrapeResult, setScrapeResult] = useState();
+  const [scrapingComplete, setScrapingComplete] = useState(false);
   const [userId, setUserId] = useState();
   const navigate = useNavigate();
 
@@ -40,7 +41,6 @@ const Results = () => {
     const q = query(
       formsCollection,
       where("user", "==", userId),
-      where("scrapingCompleted", "==", true),
       orderBy("date", "desc"),
       limit(1)
     );
@@ -49,6 +49,9 @@ const Results = () => {
       const updatedForms = [];
       snapshot.forEach((doc) => {
         const form = doc.data();
+        if (form.scrapingCompleted) {
+          setScrapingComplete(true);
+        }
         updatedForms.push({
           id: doc.id,
           input: form.input,
@@ -65,7 +68,14 @@ const Results = () => {
   }, [userId]);
 
   if (!scrapeResult) {
-    return <p className="no-results">No Results yet</p>;
+    return <p className="no-results">Results still loading, please wait</p>;
+  } else if (!scrapingComplete) {
+    return (
+      <p className="no-results">
+        Results are not ready yet for the document uploaded at:{" "}
+        {scrapeResult.date}. Give it a minute and refresh the page.
+      </p>
+    );
   }
 
   return (
@@ -75,11 +85,13 @@ const Results = () => {
         <h4 className="form-section-title">Output:</h4>
         <h5>Uploaded at {scrapeResult.date}</h5>
         <h5>Recommended stores: </h5>
-        <ul>
-          {scrapeResult.output.recommendedStores.map((storeList) => (
-            <li key={storeList}>{storeList}</li>
-          ))}
-        </ul>
+        <div className="recommended-stores-container">
+          <ul>
+            {scrapeResult.output.recommendedStores.map((storeList) => (
+              <li key={storeList}>{storeList}</li>
+            ))}
+          </ul>
+        </div>
         {renderResults(scrapeResult.output)}
       </div>
     </div>

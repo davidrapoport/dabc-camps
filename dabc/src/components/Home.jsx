@@ -75,6 +75,7 @@ const Home = () => {
       await addDoc(collection(db, "forms"), formattedDoc);
       setIsUploading(false);
       setUploadSuccess(true);
+      navigate("/results");
     } catch (error) {
       setIsUploading(false);
       setErrorCode(error.message);
