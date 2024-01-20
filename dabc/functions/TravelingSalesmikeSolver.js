@@ -46,6 +46,13 @@ const generateOutputObject = function (
     }
   }
   output["topStores"] = topStores;
+  output["debugData"] = itemAvailability;
+  // A match wasn't found. Use the A stores to populate the
+  // item missing table, and output the problematic items.
+  if (!topStores.length) {
+    topStores.push(...["0015", "0029", "0016", "0033"]);
+    output["problemItems"] = findProblemItems(itemAvailability);
+  }
   const outputData = [];
   for (const item of quantitiesNeeded) {
     const outputItem = Object.assign({}, item);
@@ -65,6 +72,26 @@ const generateOutputObject = function (
   }
   output["outputData"] = outputData;
   return output;
+};
+
+const findProblemItems = function (itemAvailability) {
+  const problemItems = [];
+  for (const sku in itemAvailability) {
+    const stores = [];
+    for (const store in itemAvailability[sku]["availability"]) {
+      if (parseInt(itemAvailability[sku]["availability"][store]) > 0) {
+        stores.push(store);
+      }
+    }
+    if (stores.length < 3) {
+      problemItems.push({
+        sku: sku,
+        name: itemAvailability[sku]["name"],
+        stores: stores,
+      });
+    }
+  }
+  return problemItems;
 };
 
 // input:

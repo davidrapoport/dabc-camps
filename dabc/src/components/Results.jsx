@@ -92,6 +92,26 @@ const Results = () => {
             ))}
           </ul>
         </div>
+        {scrapeResult.output.problemItems.length ? (
+          <>
+            <h3>
+              The following items could not be found at more than three stores.
+              They may be causing issues.
+            </h3>
+            <div className="recommended-stores-container">
+              <ul>
+                {scrapeResult.output.problemItems.map((item) => (
+                  <li key={item.sku}>
+                    {item.name} (available at {item.stores.length} stores)
+                  </li>
+                ))}
+              </ul>
+            </div>
+          </>
+        ) : (
+          <></>
+        )}
+
         {renderResults(scrapeResult.output)}
       </div>
     </div>
