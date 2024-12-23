@@ -89,22 +89,15 @@ exports.processWarehouseRequest = onDocumentCreated(
     const outputCSV = [];
     for (const item of lookupSkus) {
       const message = await scrapeAllInfoForItem(item.sku);
-      outputCSV.push(
-        "" +
-          message.name +
-          ", " +
-          message.sku +
-          ", " +
-          message.warehouseQty +
-          ", " +
-          message.storeQty +
-          ", " +
-          message.onOrderQty +
-          ", " +
-          message.currentPrice +
-          ", " +
-          message.onSpa
-      );
+      outputCSV.push({
+        name: message.name,
+        sku: message.sku,
+        warehouseQty: message.warehouseQty,
+        storeQty: message.storeQty,
+        onOrderQty: message.onOrderQty,
+        currentPrice: message.currentPrice,
+        onSpa: message.onSpa,
+      });
     }
     return event.data.ref.update({
       output: outputCSV,

@@ -90,9 +90,14 @@ const WarehouseResults = () => {
           <span>Current Price </span>
           <span>OnSPA</span>
         </div>
-        {scrapeResult.output.map((row) => (
-          <div className="data-row">{row}</div>
-        ))}
+        <div>
+          {scrapeResult.output.map((row) => (
+            <div>
+              {row.name}, {row.sku}, {row.warehouseQty}, {row.storeQty},{" "}
+              {row.onOrderQty}, {row.currentPrice}, {row.onSPA ? 1 : 0} <br />
+            </div>
+          ))}
+        </div>
       </div>
     </div>
   );
