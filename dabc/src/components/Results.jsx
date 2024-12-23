@@ -92,8 +92,8 @@ const Results = () => {
             ))}
           </ul>
         </div>
-        {scrapeResult.output.problemItems.length ? (
-          <>
+        {scrapeResult.output.problemItems ? (
+          <div>
             <h3>
               The following items could not be found at more than three stores.
               They may be causing issues.
@@ -107,7 +107,7 @@ const Results = () => {
                 ))}
               </ul>
             </div>
-          </>
+          </div>
         ) : (
           <></>
         )}
