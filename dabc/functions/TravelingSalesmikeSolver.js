@@ -50,7 +50,7 @@ const generateOutputObject = function (
   // A match wasn't found. Use the A stores to populate the
   // item missing table, and output the problematic items.
   if (!topStores.length) {
-    topStores.push(...["0015", "0029", "0016", "0033"]);
+    topStores.push(...["0015", "0029", "0052", "0016"]);
     output["problemItems"] = findProblemItems(itemAvailability);
   }
   const outputData = [];
