@@ -163,9 +163,9 @@ const visitStores = function (
 // Currently returns 467 different combinations of stores.
 // This should be feasible to bruteforce without much issue.
 function getStoresToCheck() {
-  const aStores = ["0015", "0029", "0016", "0033"];
-  const bStores = ["0025", "0041", "0035", "0013"];
-  const cStores = ["0002", "0004", "0009", "0051", "0003"];
+  const aStores = ["0015", "0029", "0052", "0016", "0041", "0025"];
+  const bStores = ["0033", "0035", "0002", "0031", "0051", "0013", "0026"];
+  const cStores = ["0009", "0014", "0004", "0003", "0040", "0046", "0048"];
   //   const dStores = [
   //     "0034",
   //     "0036",
