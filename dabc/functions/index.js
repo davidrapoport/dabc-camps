@@ -1,6 +1,6 @@
 const functions = require("firebase-functions");
 const { onDocumentCreated } = require("firebase-functions/v2/firestore");
-const { scrapeStoreInfoForItem } = require("./scraper");
+const { scrapeStoreInfoForItem, scrapeAllInfoForItem } = require("./scraper");
 const { testInputs, testOutputs } = require("./testData");
 const { findBestRoute } = require("./TravelingSalesmikeSolver");
 
@@ -29,11 +29,27 @@ exports.getItemAvailability = functions.https.onRequest(
 
 exports.runTestMode = functions.https.onRequest(async (request, response) => {
   // http://127.0.0.1:5001/get-that-booze-mike/us-central1/runTestMode
-  let output = [];
-  if (DEV_MODE) {
-    output = findBestRoute(testInputs, testOutputs);
+  const outputCSV = [];
+  for (const sku of ["737346", "077776"]) {
+    const message = await scrapeAllInfoForItem(sku);
+    outputCSV.push(
+      "" +
+        message.name +
+        ", " +
+        message.sku +
+        ", " +
+        message.warehouseQty +
+        ", " +
+        message.storeQty +
+        ", " +
+        message.onOrderQty +
+        ", " +
+        message.currentPrice +
+        ", " +
+        message.onSpa
+    );
   }
-  response.status(200).send(output);
+  response.status(200).send(outputCSV.join("\n\r"));
 });
 
 exports.runOnNewData = onDocumentCreated("forms/{id}", async (event) => {
@@ -61,3 +77,38 @@ exports.runOnNewData = onDocumentCreated("forms/{id}", async (event) => {
   const output = findBestRoute(quantitiesNeeded, storeAvailability);
   return event.data.ref.update({ output: output, scrapingCompleted: true });
 });
+
+exports.processWarehouseRequest = onDocumentCreated(
+  {
+    timeoutSeconds: 480,
+    document: "warehouse/{id}",
+  },
+  async (event) => {
+    const data = event.data.data();
+    const lookupSkus = data.input;
+    const outputCSV = [];
+    for (const item of lookupSkus) {
+      const message = await scrapeAllInfoForItem(item.sku);
+      outputCSV.push(
+        "" +
+          message.name +
+          ", " +
+          message.sku +
+          ", " +
+          message.warehouseQty +
+          ", " +
+          message.storeQty +
+          ", " +
+          message.onOrderQty +
+          ", " +
+          message.currentPrice +
+          ", " +
+          message.onSpa
+      );
+    }
+    return event.data.ref.update({
+      output: outputCSV,
+      scrapingCompleted: true,
+    });
+  }
+);

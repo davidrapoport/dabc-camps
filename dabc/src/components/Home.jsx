@@ -15,6 +15,7 @@ const Home = () => {
   const [uploadSuccess, setUploadSuccess] = useState(false);
   const navigate = useNavigate();
   const inputRef = useRef();
+  const warehouseInputRef = useRef(); // Reference for the new warehouse form file input
 
   useEffect(() => {
     onAuthStateChanged(auth, (user) => {
@@ -26,7 +27,29 @@ const Home = () => {
     });
   }, [navigate]);
 
-  const addToDb = async (e) => {
+  const uploadDataToDoc = async (data, collectionName) => {
+    const date = new Date().toISOString();
+    const formattedDoc = {
+      user: auth.currentUser.uid,
+      date,
+      scrapingCompleted: false,
+      input: data,
+      output: {},
+    };
+
+    try {
+      await addDoc(collection(db, collectionName), formattedDoc);
+      setIsUploading(false);
+      setUploadSuccess(true);
+      return true;
+    } catch (error) {
+      setIsUploading(false);
+      setErrorCode(error.message);
+      return false;
+    }
+  };
+
+  const addStoreLookupDataToDb = async (e) => {
     e.preventDefault();
     setErrorCode("");
     setUploadSuccess(false);
@@ -42,43 +65,45 @@ const Home = () => {
     const wb = read(file);
     const ws = wb.Sheets[wb.SheetNames[0]];
     const data = utils.sheet_to_json(ws);
-    const date = new Date().toISOString();
     const input = data
-      .filter((item) => {
-        if (item["Order Qty"] > 0) {
-          return true;
-        }
-        return false;
-      })
-      .map((item) => {
-        return item;
-      })
-      .map((item) => {
-        // Change the field names to make them more consistent
-        // with best practices.
-        const newItem = {};
-        newItem.sku = item.SKU.toString().padStart(6, "0");
-        newItem.quantity = item["Order Qty"];
-        newItem.name = item["AL Name"];
-        return newItem;
-      });
+      .filter((item) => item["Order Qty"] > 0)
+      .map((item) => ({
+        sku: item.SKU.toString().padStart(6, "0"),
+        quantity: item["Order Qty"],
+        name: item["AL Name"],
+      }));
 
-    const formattedDoc = {
-      user: auth.currentUser.uid,
-      date,
-      scrapingCompleted: false,
-      input,
-      output: {},
-    };
-
-    try {
-      await addDoc(collection(db, "forms"), formattedDoc);
-      setIsUploading(false);
-      setUploadSuccess(true);
+    if (await uploadDataToDoc(input, "forms")) {
       navigate("/results");
-    } catch (error) {
+    }
+  };
+
+  const addWarehouseDataToDB = async (e) => {
+    e.preventDefault();
+    setErrorCode("");
+    setIsUploading(true);
+
+    if (warehouseInputRef.current.files.length !== 1) {
       setIsUploading(false);
-      setErrorCode(error.message);
+      setErrorCode("No file chosen for upload");
+      return;
+    }
+
+    const file = await warehouseInputRef.current.files[0].arrayBuffer();
+    const wb = read(file);
+    const ws = wb.Sheets[wb.SheetNames[0]];
+    const data = utils.sheet_to_json(ws);
+
+    // Extract SKU and AL Name columns
+    const parsedData = data
+      .filter((item) => item.SKU && item["AL Name"]) // Ensure we have both SKU and AL Name
+      .map((item) => ({
+        sku: item.SKU.toString().padStart(6, "0"),
+        name: item["AL Name"],
+      }));
+
+    if (await uploadDataToDoc(parsedData, "warehouse")) {
+      navigate("/warehouseResults");
     }
   };
 
@@ -108,7 +133,7 @@ const Home = () => {
       <div>
         <p className="error-message">{errorCode}</p>
         <div className="home-page">
-          <form onSubmit={addToDb}>
+          <form onSubmit={addStoreLookupDataToDb}>
             <p>
               Please upload a file with the following structure: <br />
               SKU, AL Name, Order Qty
@@ -127,12 +152,34 @@ const Home = () => {
             )}
           </form>
         </div>
+
+        {/* New Form for "Get Warehouse and Price Info" */}
+        <br />
+        <br />
+        <div className="home-page">
+          <h3>Get Warehouse and Price Info</h3>
+          <form onSubmit={addWarehouseDataToDB}>
+            <p>
+              Please upload a file with the following structure: SKU, AL Name
+            </p>
+            <label>
+              Upload file:
+              <input type="file" ref={warehouseInputRef} accept=".xlsx,.xls" />
+            </label>
+            {isUploading ? (
+              <div className="spinner-container">
+                <ClipLoader />
+                <p className="upload-message">Uploading...</p>
+              </div>
+            ) : (
+              <button type="submit">Submit</button>
+            )}
+          </form>
+        </div>
       </div>
     );
   }
-  // TODO(nick): Add css for the footer so that the
-  // two buttons are side by side (and make the
-  // results link a button too)
+
   return (
     <div className="body">
       <h2>DABC Route Finding Tool</h2>

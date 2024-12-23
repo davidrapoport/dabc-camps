@@ -7,8 +7,21 @@ exports.scrapeStoreInfoForItem = async function (sku) {
   return parseDABSResponse(response);
 };
 
+exports.scrapeAllInfoForItem = async function (sku) {
+  const filterResponse = await getFilterResponse(sku);
+  const productData = await filterResponse.json();
+  if (!productData.data) {
+    logger.error("No data for SKU " + sku);
+    return;
+  }
+  return productData.data[0];
+};
+
 async function makeDABSRequest(sku) {
-  const filterCookie = await getFilterCookie(sku);
+  const filterResponse = await getFilterResponse(sku);
+  const filterCookie = parseFilterCookie(
+    filterResponse.headers.get("set-cookie")
+  );
   const aspCookie = await getAspCookie(sku, filterCookie);
   const tableResponse = await fetch(DATA_URL, {
     method: "GET",
@@ -42,9 +55,7 @@ const REQUEST_JSON =
   SKU_PLACEHOLDER +
   "&item_name=&category=&sub_category=&price_min=&price_max=&on_spa=false&new_items=false&in_stock=false&status=";
 
-// Takes a 6 digit SKU string and returns a string of format
-// 'filter=.....' that can be used in the following web requests
-async function getFilterCookie(sku) {
+async function getFilterResponse(sku) {
   const filterHeaderResponse = await fetch(FILTER_COOKIE_URL, {
     method: "POST",
     body: REQUEST_JSON.replace(SKU_PLACEHOLDER, sku),
@@ -59,7 +70,7 @@ async function getFilterCookie(sku) {
     logger.error(message);
     throw new Error(message);
   }
-  return parseFilterCookie(filterHeaderResponse.headers.get("set-cookie"));
+  return filterHeaderResponse;
 }
 
 function parseFilterCookie(responseHeader) {

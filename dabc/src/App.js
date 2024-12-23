@@ -9,6 +9,7 @@ import Register from "./components/Register";
 import Login from "./components/Login";
 import Home from "./components/Home";
 import Results from "./components/Results";
+import WarehouseResults from "./components/WarehouseResults";
 
 function App() {
   return (
@@ -24,6 +25,11 @@ function App() {
           <Route exact path="/login" element={<Login />} />
           <Route exact path="/home" element={<Home />} />
           <Route exact path="/results" element={<Results />} />
+          <Route
+            exact
+            path="/warehouseResults"
+            element={<WarehouseResults />}
+          />
         </Routes>
       </Router>
     </div>

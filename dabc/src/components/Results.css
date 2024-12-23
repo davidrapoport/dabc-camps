@@ -9,6 +9,15 @@
   text-align: center;
 }
 
+.data-header {
+  text-align: center;
+  font-weight: 500;
+}
+
+.data-header > span {
+  margin-left: 12px;
+}
+
 .recommended-stores-container {
   display: flex;
   justify-content: center;
